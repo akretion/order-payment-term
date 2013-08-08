@@ -40,41 +40,38 @@ class account_payment_term_line(Model):
 
 class Order(object):
 
-    def _check_amount(self, cr, uid, sale_id, total_paid_amount, total_blocking_amount):
+    def _check_amount(self, cr, uid, order_id, total_paid_amount, total_blocking_amount):
         return total_paid_amount >= total_blocking_amount
 
-    def check_payment_term(self, cr, uid, sale_id, context=None):
-        sale_obj = self.pool.get('sale.order')
-        move_obj = self.pool.get('account.move')
-        #sale_payment_term_obj = self.pool.get('sale.order.payment.term')
-        sale = sale_obj.browse(cr, uid, sale_id, context=context)
-        #sale_payment_term = sale_payment_term_obj.browse(cr, uid, sale_id, context=context)
-        if not sale.payment_term:
+    def check_payment_term(self, cr, uid, order_id, context=None):
+        order = self.browse(cr, uid, order_id, context=context)
+        payment_term = order[self._payment_term_key]
+
+        if not payment_term:
             return True
 
-        on_order = any([line.on_order for line in sale.payment_term.line_ids])
+        on_order = any([line.on_order for line in payment_term.line_ids])
         if not on_order:
             return True
 
-        move_ids = move_obj.search(cr, uid, [('ref', '=', sale.name)], context=context)
         total_paid_amount = 0
-        total_blocking_amount = sale.amount_total #TODO support percentage on the payment term
-        for move_id in move_ids:
-            move = move_obj.browse(cr, uid, move_id, context)
-            total_paid_amount += move.amount
+        total_blocking_amount = order.amount_total #TODO support percentage on the payment term
+        for line in order.payment_ids:
+            total_paid_amount += line.debit - line.credit
 
-        if self._check_amount(cr, uid, sale_id, total_paid_amount, total_blocking_amount):
+        if self._check_amount(cr, uid, order_id, total_paid_amount, total_blocking_amount):
             return True
         return False
 
 
-class SaleOrderPaymentTerm(Order, Model):
+class SaleOrder(Order, Model):
     _inherit = 'sale.order'
+    _payment_term_key = 'payment_term'
 
-    def confirm(self, cr, uid, ids, context=None):
+    def action_button_confirm(self, cr, uid, ids, context=None):
         for sale_id in ids:
             result = self.check_payment_term(cr, uid, sale_id, context)
             if result == True:
-                return self.action_button_confirm(cr, uid, ids, context)
+                return super(SaleOrder, self).action_button_confirm(cr, uid, ids, context)
             else:
                 raise osv.except_osv(_('Error!'),_('You cannot confirm a sales order that is not paid.'))

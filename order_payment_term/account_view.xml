@@ -10,7 +10,7 @@
             <field name="type">tree</field>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='value_amount']" position="after">
-                    <field name="payment_to_order"/>
+                    <field name="on_order"/>
                 </xpath>
                 <xpath expr="//field[@name='days']" position="attributes">
                     <attribute name="attrs">{'invisible':[('on_order','=', True)]}</attribute>
@@ -27,7 +27,7 @@
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='days2']" position="after">
-                    <field name="payment_to_order"/>
+                    <field name="on_order"/>
                 </xpath>
                 <xpath expr="//field[@name='days']" position="attributes">
                     <attribute name="attrs">{'invisible':[('on_order','=', True)]}</attribute>

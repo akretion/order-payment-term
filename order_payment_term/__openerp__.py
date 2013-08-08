@@ -25,7 +25,7 @@
  'maintainer': 'Akretion',
  'category': 'Finance',
  'complexity': 'normal',
- 'depends': ['account', 'sale'],
+ 'depends': ['sale_payment_method'],
  'description': """
 
                 """,
@@ -33,7 +33,6 @@
  'init_xml': [],
  'update_xml': [
      'account_view.xml',
-     'sale_view.xml',
  ],
  'demo_xml': [],
  'test': [],
