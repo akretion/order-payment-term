@@ -21,6 +21,19 @@
 #
 ###############################################################################
 
+from openerp.osv import orm, fields
 
-import order
-import account
+
+class account_payment_term_line(orm.Model):
+    _inherit = "account.payment.term.line"
+
+    _columns = {
+        'on_order': fields.boolean('On Order',
+                help='The payment term line will be applied on the order'),
+
+    }
+
+    _defaults = {
+        'on_order': False,
+    }
+

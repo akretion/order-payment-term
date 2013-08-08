@@ -22,5 +22,27 @@
 ###############################################################################
 
 
-import order
-import account
+{'name': "Sale Order Payment Term",
+ 'version': '1.0',
+ 'author': 'Akretion',
+ 'maintainer': 'Akretion',
+ 'category': 'Finance',
+ 'complexity': 'normal',
+ 'depends': [
+     'sale_payment_method',
+     'order_payment_term',
+ ],
+ 'description': """
+
+                """,
+ 'website': 'http://www.akretion.com',
+ 'init_xml': [],
+ 'update_xml': [
+ ],
+ 'demo_xml': [],
+ 'test': [],
+ 'installable': True,
+ 'images': [],
+ 'auto_install': False,
+ 'license': 'AGPL-3',
+}

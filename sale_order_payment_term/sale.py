@@ -21,6 +21,19 @@
 #
 ###############################################################################
 
+from openerp.osv import orm
+from openerp.tools.translate import _
+from openerp.addons.order_payment_term.order import Order
 
-import order
-import account
+
+class SaleOrder(Order, orm.Model):
+    _inherit = 'sale.order'
+    _payment_term_key = 'payment_term'
+
+    def action_button_confirm(self, cr, uid, ids, context=None):
+        for sale_id in ids:
+            result = self.check_payment_term(cr, uid, sale_id, context)
+            if result == True:
+                return super(SaleOrder, self).action_button_confirm(cr, uid, ids, context)
+            else:
+                raise osv.except_osv(_('Error!'),_('You cannot confirm a sales order that is not paid.'))
