@@ -24,26 +24,42 @@
 
 class Order(object):
 
-    def _check_amount(self, cr, uid, order_id, total_paid_amount, total_blocking_amount):
-        return total_paid_amount >= total_blocking_amount
-
-    def check_payment_term(self, cr, uid, order_id, context=None):
-        order = self.browse(cr, uid, order_id, context=context)
+    def need_payment(self, cr, uid, ids, context=None):
+        assert len(ids) == 1, 'This method should only be used for a single id at a time'
+        order = self.browse(cr, uid, ids[0], context=context)
         payment_term = order[self._payment_term_key]
 
         if not payment_term:
-            return True
+            return False
 
-        on_order = any([line.on_order for line in payment_term.line_ids])
-        if not on_order:
-            return True
+        return any([line.on_order for line in payment_term.line_ids])
 
-        total_paid_amount = 0
+    def check_payment(self, cr, uid, ids, delta_min=0, delta_max=None, context=None):
+        """
+        :param delta_min: tolerated minimal diference should be negative
+        :param delta_max: toterated maximal diference should be positive
+        :return: True or False
+        :rtype: boolean
+        """
+        assert len(ids) == 1, 'This method should only be used for a single id at a time'
+
+        if delta_min is not None:
+            assert delta_min <= 0, 'Delta Min should be negative'
+        if delta_max is not None:
+            assert delta_max >= 0, 'Delta Max should be positive'
+
+        if not self.need_payment(cr, uid, ids, context=context):
+            return True
+        order = self.browse(cr, uid, ids[0], context=context)
+        
         total_blocking_amount = order.amount_total #TODO support percentage on the payment term
-        for line in order.payment_ids:
-            total_paid_amount += line.debit - line.credit
-
-        if self._check_amount(cr, uid, order_id, total_paid_amount, total_blocking_amount):
-            return True
-        return False
+        
+        diff_amount = order.amount_paid - total_blocking_amount
+        decimal_precision = self.pool['decimal.precision'].precision_get(cr, uid, 'Account')
+        float_delta = pow(0.1, decimal_precision + 1)
+        if delta_min is not None and diff_amount < (delta_min - float_delta):
+            return False
+        if delta_max is not None and diff_amount > (delta_max + float_delta):
+            return False
+        return True
 
