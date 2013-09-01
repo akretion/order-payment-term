@@ -31,6 +31,7 @@
  'depends': [
      'sale_payment_method',
      'order_payment_term',
+     'sale_exceptions',
  ],
  'description': """
 
@@ -38,6 +39,7 @@
  'website': 'http://www.akretion.com',
  'init_xml': [],
  'update_xml': [
+     'sale_data.xml',
  ],
  'demo_xml': [],
  'test': [],
