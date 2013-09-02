@@ -24,6 +24,23 @@
 
 class Order(object):
 
+    def _get_blocking_amount(self, cr, uid, order, context=None):
+        amount = order.amount_total
+        obj_precision = self.pool.get('decimal.precision')
+        prec = obj_precision.precision_get(cr, uid, 'Account')
+        payment_term = order[self._payment_term_key]
+
+        res = 0
+        for line in payment_term.line_ids:
+            if line.on_order:
+                if line.value == 'fixed':
+                    res += round(line.value_amount, prec)
+                elif line.value == 'procent':
+                    res += round(order.amount_total * line.value_amount, prec)
+                elif line.value == 'balance':
+                    res += round(amount, prec)
+        return res
+
     def need_payment(self, cr, uid, ids, context=None):
         assert len(ids) == 1, 'This method should only be used for a single id at a time'
         order = self.browse(cr, uid, ids[0], context=context)
@@ -53,7 +70,7 @@ class Order(object):
             return True
         order = self.browse(cr, uid, ids[0], context=context)
 
-        total_blocking_amount = order.amount_total #TODO support percentage on the payment term
+        total_blocking_amount = self._get_blocking_amount(cr, uid, order, context=context)
         
         diff_amount = order.amount_paid - total_blocking_amount
         decimal_precision = self.pool['decimal.precision'].precision_get(cr, uid, 'Account')
