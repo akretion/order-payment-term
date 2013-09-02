@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+
+        <record id="excep_no_payment_exist" model="exception.rule">
+            <field name="name">The payment is missing.</field>
+            <field name="description">The payment term of the sale order required a payment before
+            the validation of the sale order. Please add it before trying to validate the sale order.</field>
+            <field name="sequence">200</field>
+            <field name="model">sale.order</field>
+            <field name="code">if object.need_payment() and not object.payment_ids:
+    failed = True</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="excep_min_amount" model="exception.rule">
+            <field name="name">The amount paid is insufficient.</field>
+            <field name="description">The payment term of the sale order required a payment before
+                the validation of the sale order. The payment exist but the amount is insufficient.
+                Please fix it before trying to validate the sale order.</field>
+            <field name="sequence">210</field>
+            <field name="model">sale.order</field>
+            <field name="code">if not object.check_payment(delta_min=0):
+    failed = True</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="excep_max_amount" model="exception.rule">
+            <field name="name">The amount paid exceed the maximun tolerated</field>
+            <field name="description">The payment term of the sale order required a payment before
+                the validation of the sale order. The payment exist but the amount exceed the maximun tolerated.
+                Maybe the payment registred is not correct, or the amount of the sale order is incorrect.
+                Please fix it before trying to validate the sale order.</field>
+            <field name="sequence">220</field>
+            <field name="model">sale.order</field>
+            <field name="code">if not object.check_payment(delta_max=5):
+    failed = True</field>
+            <field name="active" eval="False"/>
+        </record>
+
+    </data>
+</openerp>

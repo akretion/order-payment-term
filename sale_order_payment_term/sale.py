@@ -31,7 +31,7 @@ class SaleOrder(Order, orm.Model):
     _payment_term_key = 'payment_term'
 
     def remove_payment_term_exception(self, cr, uid, ids, context=None):
-        for xml_id in ['excep_no_payment_exist', 'excep_incorrect_amount_paid']:
+        for xml_id in ['excep_no_payment_exist', 'excep_min_amount', 'excep_max_amount']:
             self.remove_exception(cr, uid, ids, 'sale_order_payment_term', xml_id, context=context)
         return True
 
