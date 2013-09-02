@@ -34,7 +34,7 @@ class Order(object):
 
         return any([line.on_order for line in payment_term.line_ids])
 
-    def check_payment(self, cr, uid, ids, delta_min=0, delta_max=None, context=None):
+    def check_payment(self, cr, uid, ids, delta_min=None, delta_max=None, context=None):
         """
         :param delta_min: tolerated minimal diference should be negative
         :param delta_max: toterated maximal diference should be positive
@@ -42,6 +42,7 @@ class Order(object):
         :rtype: boolean
         """
         assert len(ids) == 1, 'This method should only be used for a single id at a time'
+        assert not (delta_min is None and delta_max is None), 'You must check at least on delta max or min'
 
         if delta_min is not None:
             assert delta_min <= 0, 'Delta Min should be negative'
@@ -51,7 +52,7 @@ class Order(object):
         if not self.need_payment(cr, uid, ids, context=context):
             return True
         order = self.browse(cr, uid, ids[0], context=context)
-        
+
         total_blocking_amount = order.amount_total #TODO support percentage on the payment term
         
         diff_amount = order.amount_paid - total_blocking_amount
