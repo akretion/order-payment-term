@@ -45,8 +45,7 @@ class Order(object):
         assert len(ids) == 1, 'This method should only be used for a single id at a time'
         order = self.browse(cr, uid, ids[0], context=context)
         payment_term = order[self._payment_term_key]
-
-        if not payment_term:
+        if not payment_term or not payment_term.line_ids:
             return False
 
         return any([line.on_order for line in payment_term.line_ids])
