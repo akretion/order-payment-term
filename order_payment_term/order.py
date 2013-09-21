@@ -21,8 +21,10 @@
 #
 ###############################################################################
 
+from openerp.osv import fields, orm
 
-class Order(object):
+class Record2CheckTerm(orm.AbstractModel):
+    _name = "record2checkterm"
 
     def _get_blocking_amount(self, cr, uid, order, context=None):
         amount = order.amount_total
