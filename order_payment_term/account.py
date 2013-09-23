@@ -37,3 +37,12 @@ class account_payment_term_line(orm.Model):
         'on_order': False,
     }
 
+    def create(self, cr, uid, vals, context=None):
+        if vals.get('on_order'):
+            vals.update({'days': 0, 'days2': 0})
+        return super(account_payment_term_line, self).create(cr, uid, vals, context=context)
+
+    def write(self, cr, uid, ids, vals, context=None):
+        if vals.get('on_order'):
+            vals.update({'days': 0, 'days2': 0})
+        return super(account_payment_term_line, self).write(cr, uid, ids, vals, context=context)
