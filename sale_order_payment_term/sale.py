@@ -23,11 +23,11 @@
 
 from openerp.osv import orm, osv
 from openerp.tools.translate import _
-from openerp.addons.order_payment_term.order import Order
 
 
-class SaleOrder(Order, orm.Model):
-    _inherit = 'sale.order'
+class SaleOrder(orm.Model):
+    _inherit = ['sale.order', 'record2checkterm']
+    _name = 'sale.order'
     _payment_term_key = 'payment_term'
 
     def remove_payment_term_exception(self, cr, uid, ids, context=None):
