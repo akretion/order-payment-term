@@ -26,7 +26,7 @@
             <field name="inherit_id" ref="account.view_payment_term_line_form" />
             <field name="type">form</field>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='days2']" position="after">
+                <xpath expr="//field[@name='days']" position="before">
                     <field name="on_order"/>
                 </xpath>
                 <xpath expr="//field[@name='days']" position="attributes">

@@ -15,8 +15,8 @@
 
         <record id="excep_min_amount" model="exception.rule">
             <field name="name">The amount paid is insufficient.</field>
-            <field name="description">The payment term of the sale order required a payment before
-                the validation of the sale order. The payment exist but the amount is insufficient.
+            <field name="description">The payment term of the sale order requires a payment before
+                the validation of the sale order. The payment exists but the amount is insufficient.
                 Please fix it before trying to validate the sale order.</field>
             <field name="sequence">210</field>
             <field name="model">sale.order</field>
@@ -27,9 +27,9 @@
 
         <record id="excep_max_amount" model="exception.rule">
             <field name="name">The amount paid exceed the maximun tolerated</field>
-            <field name="description">The payment term of the sale order required a payment before
-                the validation of the sale order. The payment exist but the amount exceed the maximun tolerated.
-                Maybe the payment registred is not correct, or the amount of the sale order is incorrect.
+            <field name="description">The payment term of the sale order requires a payment before
+                the validation of the sale order. The payment exists but the amount exceeds the maximun tolerated.
+                Maybe the registred payment is not correct, or the amount of the sale order is incorrect.
                 Please fix it before trying to validate the sale order.</field>
             <field name="sequence">220</field>
             <field name="model">sale.order</field>
